@@ -4,12 +4,15 @@ import { useState, useCallback } from 'react';
 import { useWallet } from '@/contexts/WalletContext';
 import { CONTRACT_ADDRESSES, FEE_LIMIT } from '@/lib/constants';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyContract = any;
+
 export function useUSDT() {
   const { tronWeb, wallet, refreshBalances } = useWallet();
   const [isApproving, setIsApproving] = useState(false);
 
   // Get USDT contract instance
-  const getUSDTContract = useCallback(async () => {
+  const getUSDTContract = useCallback(async (): Promise<AnyContract> => {
     if (!tronWeb || !CONTRACT_ADDRESSES.usdt) {
       throw new Error('TronWeb or USDT address not available');
     }

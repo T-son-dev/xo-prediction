@@ -78,8 +78,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       if (CONTRACT_ADDRESSES.usdt) {
         try {
           const usdtContract = await tronWebInstance.contract().at(CONTRACT_ADDRESSES.usdt);
-          const balance = await usdtContract.balanceOf(address).call();
-          usdtBalance = balance.toString();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const balance = await (usdtContract as any).balanceOf(address).call();
+          usdtBalance = String(balance);
         } catch (err) {
           console.error('Error fetching USDT balance:', err);
         }
@@ -90,7 +91,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       if (CONTRACT_ADDRESSES.predictionMarket) {
         try {
           const marketContract = await tronWebInstance.contract().at(CONTRACT_ADDRESSES.predictionMarket);
-          const adminAddress = await marketContract.admin().call();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const adminAddress = await (marketContract as any).admin().call();
           const adminBase58 = tronWebInstance.address.fromHex(adminAddress);
           isAdmin = adminBase58.toLowerCase() === address.toLowerCase();
         } catch (err) {
@@ -145,7 +147,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       }
 
       // Check response - TronLink returns different formats
-      if (res === false || (typeof res === 'object' && res?.code === 4001)) {
+      if (res === false || (typeof res === 'object' && (res as { code?: number })?.code === 4001)) {
         throw new Error('Wallet connection was rejected by user.');
       }
 

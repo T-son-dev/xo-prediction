@@ -5,6 +5,9 @@ import { useWallet } from '@/contexts/WalletContext';
 import { CONTRACT_ADDRESSES, FEE_LIMIT } from '@/lib/constants';
 import { Prediction, PredictionOption, PredictionStatus, TransactionState } from '@/types';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyContract = any;
+
 export function useContract() {
   const { tronWeb, wallet, refreshBalances } = useWallet();
   const [txState, setTxState] = useState<TransactionState>({
@@ -14,7 +17,7 @@ export function useContract() {
   });
 
   // Get contract instance
-  const getContract = useCallback(async () => {
+  const getContract = useCallback(async (): Promise<AnyContract> => {
     if (!tronWeb || !CONTRACT_ADDRESSES.predictionMarket) {
       throw new Error('TronWeb or contract address not available');
     }
@@ -22,7 +25,7 @@ export function useContract() {
   }, [tronWeb]);
 
   // Get USDT contract instance
-  const getUSDTContract = useCallback(async () => {
+  const getUSDTContract = useCallback(async (): Promise<AnyContract> => {
     if (!tronWeb || !CONTRACT_ADDRESSES.usdt) {
       throw new Error('TronWeb or USDT address not available');
     }
